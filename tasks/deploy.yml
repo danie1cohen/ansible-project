@@ -15,13 +15,13 @@
   copy: src={{ project_settings_file }}
         dest={{ build }}/{{ project_settings_relative_dest }}
         mode=0600 owner={{ project_user }} group={{ project_user }}
-  when: project_settings_file == True
+  when: project_settings_file is string
 
 - name: create settings.py file from template
-  template: src={{ project_settings_file }}
+  template: src={{ project_settings_template }}
             dest={{ build }}/{{ project_settings_relative_dest }}
             mode=0600 owner={{ project_user }} group={{ project_user }}
-  when: project_settings_template == True
+  when: project_settings_template is string
 
 - name: find requirements.txt
   stat: path={{ build }}/requirements.txt
