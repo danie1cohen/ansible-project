@@ -10,3 +10,11 @@ project_user: "{{ ansible_user_id }}"
 project_test_cmd: "{{ virtualenv }}/bin/nosetests"
 project_dependencies:
   - git-core
+
+# specify a template or file location, either
+# templates/settings.py.j2
+project_settings_template: no
+# files/settings.py
+project_settings_file: no
+# and its destination path, relative to the build folder
+project_settings_relative_dest: "{{ project }}/settings.py"

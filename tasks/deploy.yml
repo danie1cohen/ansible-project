@@ -11,10 +11,17 @@
   git: repo={{ project_repo }} dest={{ build }} clone=yes
        key_file=/home/{{ project_user }}/.ssh/id_rsa
 
-- name: create settings.py file
-  copy: src=files/settings.py
-        dest={{ build }}/{{ project }}/settings.py
+- name: copy settings.py file
+  copy: src={{ project_settings_file }}
+        dest={{ build }}/{{ project_settings_relative_dest }}
         mode=0600 owner={{ project_user }} group={{ project_user }}
+  when: project_settings_file == True
+
+- name: create settings.py file from template
+  template: src={{ project_settings_file }}
+            dest={{ build }}/{{ project_settings_relative_dest }}
+            mode=0600 owner={{ project_user }} group={{ project_user }}
+  when: project_settings_template == True
 
 - name: find requirements.txt
   stat: path={{ build }}/requirements.txt
