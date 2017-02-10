@@ -1,0 +1,21 @@
+---
+# tasks file for project
+
+- name: make log dir
+  file: path={{ project_log_path }} state=directory
+        owner={{ project_user }} group={{ project_user }}
+  become: yes
+
+- name: install dependencies
+  apt: name={{ item }} state=present
+  become: yes
+  with_items: "{{ project_dependencies }}"
+
+- name: check current install for updates
+  shell: cd {{ project_install_path }}/current && git fetch && git status | grep -q "Your branch is up-to-date" && exit 0 || exit 1
+  register: up_to_date
+  ignore_errors: True
+  changed_when: up_to_date|failed
+
+- include: deploy.yml
+  when: up_to_date|failed

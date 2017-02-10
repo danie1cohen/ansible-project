@@ -1,0 +1,34 @@
+
+- name: set build folder
+  set_fact: build={{ project_install_path }}/{{ ansible_date_time.iso8601 }}
+
+- name: create build folder
+  file: path={{ build }} state=directory mode=0755
+        owner={{ project_user }} group={{ project_user }}
+  become: yes
+
+- name: download project from repo
+  git: repo={{ project_repo }} dest={{ build }} clone=yes
+       key_file=/home/{{ project_user }}/.ssh/id_rsa
+
+- name: create settings.py file
+  copy: src=files/settings.py
+        dest={{ build }}/{{ project }}/settings.py
+        mode=0600 owner={{ project_user }} group={{ project_user }}
+
+- name: find requirements.txt
+  stat: path={{ build }}/requirements.txt
+  register: reqmts
+
+- name: install requirements in venv
+  pip: requirements={{ build }}/requirements.txt executable={{ virtualenv_pip }}
+  when: reqmts.stat.exists == True
+  register: pip_result
+  changed_when: "'Successfully installed' in pip_result.stdout"
+
+- name: run tests
+  command: "{{ project_test_cmd }} chdir={{ build }}"
+
+- name: create symlink to new build
+  file: src={{ build }} dest={{ project_install_path }}/current state=link
+  become: yes

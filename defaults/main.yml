@@ -1,0 +1,12 @@
+---
+# defaults file for project
+
+project: someproject
+project_timezone: UTC
+project_install_path: /opt/{{ project }}
+project_log_path: /var/log/{{ project }}
+project_repo: https://github.com/danie1cohen/django-demo.git
+project_user: "{{ ansible_user_id }}"
+project_test_cmd: "{{ virtualenv }}/bin/nosetests"
+project_dependencies:
+  - git-core
