@@ -1,6 +1,11 @@
 ---
 # tasks file for project
 
+- name: set timezone
+  file: src=/usr/share/zoneinfo/{{ project_timezone }} dest=/etc/localtime
+        state=link force=yes
+  become: yes
+
 - name: make log dir
   file: path={{ project_log_path }} state=directory
         owner={{ project_user }} group={{ project_user }}
