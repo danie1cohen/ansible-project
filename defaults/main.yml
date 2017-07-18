@@ -8,6 +8,13 @@ project_log_path: /var/log/{{ project }}
 project_repo: https://github.com/danie1cohen/django-demo.git
 project_user: "{{ ansible_user_id }}"
 project_test_cmd: "{{ virtualenv }}/bin/nosetests"
+
+# set to yes to force a deployment when git has not been updated
+project_force_updates: no
+
+# set a deploy key to use when cloning from git
+project_use_deploy_key: no
+project_deploy_key: /home/{{ project_user }}/.ssh/id_rsa
 project_dependencies:
   - git-core
 

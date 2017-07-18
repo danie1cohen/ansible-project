@@ -1,15 +1,20 @@
 
 - name: set build folder
-  set_fact: build={{ project_install_path }}/{{ ansible_date_time.iso8601 }}
+  set_fact: build={{ project_install_path }}/{{ ansible_date_time.epoch }}
 
 - name: create build folder
   file: path={{ build }} state=directory mode=0755
         owner={{ project_user }} group={{ project_user }}
   become: yes
 
-- name: download project from repo
+- name: download project from repo (w/key)
   git: repo={{ project_repo }} dest={{ build }} clone=yes
-       key_file=/home/{{ project_user }}/.ssh/id_rsa
+       key_file={{ project_deploy_key }}
+  when: project_use_deploy_key
+
+- name: download project from repo (no key)
+  git: repo={{ project_repo }} dest={{ build }} clone=yes
+  when: not project_use_deploy_key
 
 - name: copy settings.py file
   copy: src={{ project_settings_file }}

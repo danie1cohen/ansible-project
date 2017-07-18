@@ -23,4 +23,4 @@
   changed_when: up_to_date|failed
 
 - include: deploy.yml
-  when: up_to_date|failed
+  when: up_to_date|failed or project_force_updates
